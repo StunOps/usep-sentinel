@@ -1,0 +1,231 @@
+@import "tailwindcss";
+
+/* ===== Custom Theme ===== */
+@theme {
+  --color-dark-bg: #060a13;
+  --color-dark-surface: #0d1321;
+  --color-dark-card: #111827;
+  --color-dark-border: #1e293b;
+  --color-accent-blue: #3b82f6;
+  --color-accent-cyan: #06b6d4;
+  --color-accent-red: #ef4444;
+  --color-accent-green: #22c55e;
+  --color-accent-yellow: #eab308;
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-glass: rgba(15, 23, 42, 0.85);
+  --color-glass-border: rgba(100, 116, 139, 0.25);
+}
+
+/* ===== Base Styles ===== */
+/* Note: Tailwind v4 preflight handles *, *::before, *::after reset.
+   Do NOT add unlayered * { padding: 0 } — it overrides all Tailwind
+   padding/margin utilities due to CSS Cascade Layer ordering. */
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--color-dark-bg);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-dark-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-blue);
+}
+
+/* ===== Glass Card ===== */
+.glass-card {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(100, 116, 139, 0.25);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== Animations ===== */
+@keyframes pulse-rec {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.animate-pulse-rec {
+  animation: pulse-rec 1.2s ease-in-out infinite;
+}
+
+@keyframes scan-line {
+  0% {
+    top: 0;
+  }
+
+  100% {
+    top: 100%;
+  }
+}
+
+.scan-line::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.6), transparent);
+  animation: scan-line 3s linear infinite;
+  top: 0;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out forwards;
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.4s ease-out forwards;
+}
+
+@keyframes pulse-seat {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 12px 4px rgba(239, 68, 68, 0.2);
+  }
+}
+
+.animate-pulse-seat-red {
+  animation: pulse-seat 2s ease-in-out infinite;
+}
+
+@keyframes pulse-seat-yellow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 12px 4px rgba(234, 179, 8, 0.2);
+  }
+}
+
+.animate-pulse-seat-yellow {
+  animation: pulse-seat-yellow 2s ease-in-out infinite;
+}
+
+@keyframes count-up {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-count-up {
+  animation: count-up 0.6s ease-out forwards;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ===== Modal Overlay ===== */
+.modal-overlay {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ===== Gradient Accents ===== */
+.gradient-blue {
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+}
+
+.gradient-red {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+}
+
+.gradient-green {
+  background: linear-gradient(135deg, #22c55e, #06b6d4);
+}
+
+.gradient-yellow {
+  background: linear-gradient(135deg, #eab308, #f97316);
+}
+
+.gradient-purple {
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+}
+
+/* ===== Live Feed Scroll ===== */
+.live-feed-container {
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.live-feed-container::-webkit-scrollbar {
+  width: 4px;
+}
