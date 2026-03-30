@@ -17,6 +17,10 @@ import {
     Armchair,
     AlertTriangle,
     X,
+    Check,
+    XCircle,
+    Filter,
+    Download,
 } from 'lucide-react';
 import VideoModal from '../components/VideoModal';
 import {
@@ -42,6 +46,22 @@ export default function RecordsAnalytics() {
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [selectedSeat, setSelectedSeat] = useState(null);
     const [activeTab, setActiveTab] = useState('records');
+    const [verifiedMap, setVerifiedMap] = useState(() => {
+        const map = {};
+        cheatingLogs.forEach((log) => { map[log.id] = true; });
+        return map;
+    });
+    const [verifiedFilter, setVerifiedFilter] = useState('all');
+
+    const toggleVerified = (id) => {
+        setVerifiedMap((prev) => ({ ...prev, [id]: !prev[id] }));
+    };
+
+    const filteredLogs = cheatingLogs.filter((log) => {
+        if (verifiedFilter === 'verified') return verifiedMap[log.id];
+        if (verifiedFilter === 'unverified') return !verifiedMap[log.id];
+        return true;
+    });
 
     const tabs = [
         { id: 'records', label: 'Records' },
@@ -74,7 +94,19 @@ export default function RecordsAnalytics() {
                         <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider">
                             Cheating Records
                         </h3>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-dark-card border border-dark-border">
+                                <Filter size={14} className="text-text-secondary" />
+                                <select
+                                    value={verifiedFilter}
+                                    onChange={(e) => setVerifiedFilter(e.target.value)}
+                                    className="bg-transparent text-sm text-text-primary outline-none cursor-pointer"
+                                >
+                                    <option value="all" className="bg-dark-card">All Records</option>
+                                    <option value="verified" className="bg-dark-card">Verified Only</option>
+                                    <option value="unverified" className="bg-dark-card">Unverified Only</option>
+                                </select>
+                            </div>
                             <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-dark-card border border-dark-border">
                                 <Search size={14} className="text-text-secondary" />
                                 <input
@@ -83,6 +115,31 @@ export default function RecordsAnalytics() {
                                     className="bg-transparent text-sm text-text-primary outline-none w-40 placeholder-text-secondary"
                                 />
                             </div>
+                            <button
+                                onClick={() => {
+                                    const headers = ['Timestamp', 'Seat No.', 'Cheating Type', 'Camera', 'Confidence', 'Verified'];
+                                    const rows = filteredLogs.map((log) => [
+                                        log.time,
+                                        log.seat,
+                                        log.type,
+                                        log.camera,
+                                        `${log.confidence}%`,
+                                        verifiedMap[log.id] ? 'Verified' : 'Unverified',
+                                    ]);
+                                    const csv = [headers, ...rows].map((r) => r.join(',')).join('\n');
+                                    const blob = new Blob([csv], { type: 'text/csv' });
+                                    const url = URL.createObjectURL(blob);
+                                    const a = document.createElement('a');
+                                    a.href = url;
+                                    a.download = 'cheating_records.csv';
+                                    a.click();
+                                    URL.revokeObjectURL(url);
+                                }}
+                                className="flex items-center gap-2 px-4 py-2.5 rounded-xl gradient-blue text-white text-xs font-semibold hover:opacity-90 transition-opacity shadow-md shadow-accent-blue/20"
+                            >
+                                <Download size={14} />
+                                Export
+                            </button>
                         </div>
                     </div>
 
@@ -108,10 +165,13 @@ export default function RecordsAnalytics() {
                                     <th className="text-center px-7 py-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">
                                         Action
                                     </th>
+                                    <th className="text-center px-7 py-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                                        Verified
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {cheatingLogs.map((log, i) => (
+                                {filteredLogs.map((log, i) => (
                                     <tr
                                         key={log.id}
                                         className="border-b border-dark-border/50 hover:bg-dark-card/50 transition-colors"
@@ -128,12 +188,15 @@ export default function RecordsAnalytics() {
                                         </td>
                                         <td className="px-7 py-4">
                                             <span
-                                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${log.type === 'Phone Usage'
+                                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${
+                                                    log.type === 'Using Phone'
                                                         ? 'bg-accent-red/10 text-accent-red'
-                                                        : log.type === 'Head Turning'
+                                                        : log.type === 'Head Tilting'
                                                             ? 'bg-accent-yellow/10 text-accent-yellow'
-                                                            : 'bg-accent-blue/10 text-accent-blue'
-                                                    }`}
+                                                            : log.type === 'Hands Under Table'
+                                                                ? 'bg-accent-cyan/10 text-accent-cyan'
+                                                                : 'bg-accent-blue/10 text-accent-blue'
+                                                }`}
                                             >
                                                 {log.type}
                                             </span>
@@ -163,6 +226,22 @@ export default function RecordsAnalytics() {
                                                 View
                                             </button>
                                         </td>
+                                        <td className="px-7 py-4 text-center">
+                                            <button
+                                                onClick={() => toggleVerified(log.id)}
+                                                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold transition-colors ${
+                                                    verifiedMap[log.id]
+                                                        ? 'bg-accent-green/10 border border-accent-green/20 text-accent-green hover:bg-accent-green/20'
+                                                        : 'bg-dark-card border border-dark-border text-text-secondary hover:text-text-primary'
+                                                }`}
+                                            >
+                                                {verifiedMap[log.id] ? (
+                                                    <><Check size={12} /> Verified</>
+                                                ) : (
+                                                    <><XCircle size={12} /> Unverified</>
+                                                )}
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -187,7 +266,7 @@ export default function RecordsAnalytics() {
                         {/* Line Chart */}
                         <div className="glass-card p-7">
                             <h3 className="text-sm font-bold text-text-primary mb-5 uppercase tracking-wider">
-                                Incidents Per Hour
+                                Incidents During Exam Duration
                             </h3>
                             <div className="h-72">
                                 <Line data={incidentsPerHourChartData} options={lineChartOptions} />
@@ -226,7 +305,7 @@ export default function RecordsAnalytics() {
                         </div>
 
                         {/* Seat Grid */}
-                        <div className="grid grid-cols-5 sm:grid-cols-6 gap-4 max-w-2xl mx-auto">
+                        <div className="grid grid-cols-4 gap-4 max-w-lg mx-auto">
                             {seatData.map((seat) => {
                                 const statusColors = {
                                     green: 'bg-accent-green/15 border-accent-green/30 hover:bg-accent-green/25',

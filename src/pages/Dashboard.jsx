@@ -8,11 +8,12 @@ import {
     Camera,
 } from 'lucide-react';
 import StatCard from '../components/StatCard';
+import NoiseLevel from '../components/NoiseLevel';
 import AlertPopup from '../components/AlertPopup';
 import VideoModal from '../components/VideoModal';
 import { dashboardStats, cheatingLogs, cheatingTypes } from '../data/mockData';
 
-export default function Dashboard() {
+export default function Dashboard({ session }) {
     const [alert, setAlert] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [liveFeed, setLiveFeed] = useState([...cheatingLogs]);
@@ -54,11 +55,12 @@ export default function Dashboard() {
 
     return (
         <div className="space-y-6">
-            {/* ─── ROW 1: Stat Cards ─── */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+            {/* ─── ROW 1: Stat Cards + Noise Level ─── */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 {dashboardStats.map((stat, i) => (
                     <StatCard key={stat.label} {...stat} delay={i * 80} />
                 ))}
+                <NoiseLevel />
             </div>
 
             {/* ─── ROW 2: Camera Feeds ─── */}
@@ -144,10 +146,11 @@ export default function Dashboard() {
                                 }`}
                         >
                             <div
-                                className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${entry.type === 'Phone Usage' ? 'gradient-red'
-                                    : entry.type === 'Head Turning' ? 'gradient-yellow'
-                                        : entry.type === 'Passing Notes' ? 'gradient-blue'
-                                            : 'gradient-purple'
+                                className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${entry.type === 'Using Phone' ? 'gradient-red'
+                                    : entry.type === 'Head Tilting' ? 'gradient-yellow'
+                                        : entry.type === 'Passing Paper' ? 'gradient-blue'
+                                            : entry.type === 'Using Cheat Sheet' ? 'gradient-purple'
+                                                : 'gradient-green'
                                     }`}
                             >
                                 <AlertTriangle size={16} className="text-white" />

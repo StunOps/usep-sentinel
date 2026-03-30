@@ -4,7 +4,7 @@ export const cheatingLogs = [
         id: 1,
         time: "10:23 AM",
         seat: "08",
-        type: "Phone Usage",
+        type: "Using Phone",
         camera: "Camera 2",
         confidence: 94,
         timestamp: "2026-02-26T10:23:00",
@@ -13,7 +13,7 @@ export const cheatingLogs = [
         id: 2,
         time: "10:19 AM",
         seat: "12",
-        type: "Head Turning",
+        type: "Head Tilting",
         camera: "Camera 1",
         confidence: 91,
         timestamp: "2026-02-26T10:19:00",
@@ -22,7 +22,7 @@ export const cheatingLogs = [
         id: 3,
         time: "10:05 AM",
         seat: "05",
-        type: "Passing Notes",
+        type: "Passing Paper",
         camera: "Camera 2",
         confidence: 87,
         timestamp: "2026-02-26T10:05:00",
@@ -31,7 +31,7 @@ export const cheatingLogs = [
         id: 4,
         time: "9:52 AM",
         seat: "18",
-        type: "Looking at Neighbor",
+        type: "Hands Under Table",
         camera: "Camera 1",
         confidence: 89,
         timestamp: "2026-02-26T09:52:00",
@@ -39,8 +39,8 @@ export const cheatingLogs = [
     {
         id: 5,
         time: "9:41 AM",
-        seat: "22",
-        type: "Phone Usage",
+        seat: "14",
+        type: "Using Phone",
         camera: "Camera 2",
         confidence: 96,
         timestamp: "2026-02-26T09:41:00",
@@ -49,7 +49,7 @@ export const cheatingLogs = [
         id: 6,
         time: "9:30 AM",
         seat: "03",
-        type: "Head Turning",
+        type: "Head Tilting",
         camera: "Camera 1",
         confidence: 82,
         timestamp: "2026-02-26T09:30:00",
@@ -57,28 +57,27 @@ export const cheatingLogs = [
     {
         id: 7,
         time: "9:15 AM",
-        seat: "27",
-        type: "Whispering",
+        seat: "17",
+        type: "Using Cheat Sheet",
         camera: "Camera 2",
         confidence: 78,
         timestamp: "2026-02-26T09:15:00",
     },
 ];
 
-// ===== Seat Map Data =====
-export const seatData = Array.from({ length: 30 }, (_, i) => {
+// ===== Seat Map Data (5 rows x 4 columns = 20 seats) =====
+export const seatData = Array.from({ length: 20 }, (_, i) => {
     const seatNum = i + 1;
     const padded = String(seatNum).padStart(2, "0");
 
-    // Some seats are flagged
     const flaggedSeats = {
-        8: { status: "red", incidents: 2, mostCommon: "Phone Usage" },
-        12: { status: "red", incidents: 3, mostCommon: "Head Turning" },
-        5: { status: "yellow", incidents: 1, mostCommon: "Passing Notes" },
-        18: { status: "yellow", incidents: 1, mostCommon: "Looking at Neighbor" },
-        22: { status: "red", incidents: 2, mostCommon: "Phone Usage" },
-        3: { status: "yellow", incidents: 1, mostCommon: "Head Turning" },
-        27: { status: "yellow", incidents: 1, mostCommon: "Whispering" },
+        8: { status: "red", incidents: 2, mostCommon: "Using Phone" },
+        12: { status: "red", incidents: 3, mostCommon: "Head Tilting" },
+        5: { status: "yellow", incidents: 1, mostCommon: "Passing Paper" },
+        18: { status: "yellow", incidents: 1, mostCommon: "Hands Under Table" },
+        14: { status: "red", incidents: 2, mostCommon: "Using Phone" },
+        3: { status: "yellow", incidents: 1, mostCommon: "Head Tilting" },
+        17: { status: "yellow", incidents: 1, mostCommon: "Using Cheat Sheet" },
     };
 
     const seatInfo = flaggedSeats[seatNum] || {
@@ -94,7 +93,7 @@ export const seatData = Array.from({ length: 30 }, (_, i) => {
     };
 });
 
-// ===== Dashboard Stats =====
+// ===== Dashboard Stats (removed Most Flagged Seat) =====
 export const dashboardStats = [
     {
         label: "Total Incidents Today",
@@ -104,15 +103,9 @@ export const dashboardStats = [
     },
     {
         label: "Most Common Type",
-        value: "Head Turning",
+        value: "Head Tilting",
         icon: "Eye",
         gradient: "gradient-yellow",
-    },
-    {
-        label: "Most Flagged Seat",
-        value: "Seat 12",
-        icon: "Armchair",
-        gradient: "gradient-purple",
     },
     {
         label: "Detection Accuracy",
@@ -125,28 +118,28 @@ export const dashboardStats = [
 // ===== Chart Data =====
 export const cheatingTypesChartData = {
     labels: [
-        "Phone Usage",
-        "Head Turning",
-        "Passing Notes",
-        "Looking at Neighbor",
-        "Whispering",
+        "Passing Paper",
+        "Head Tilting",
+        "Hands Under Table",
+        "Using Phone",
+        "Using Cheat Sheet",
     ],
     datasets: [
         {
             label: "Incidents",
-            data: [3, 4, 1, 2, 1],
+            data: [2, 4, 1, 3, 1],
             backgroundColor: [
-                "rgba(239, 68, 68, 0.7)",
-                "rgba(234, 179, 8, 0.7)",
                 "rgba(59, 130, 246, 0.7)",
+                "rgba(234, 179, 8, 0.7)",
                 "rgba(139, 92, 246, 0.7)",
+                "rgba(239, 68, 68, 0.7)",
                 "rgba(6, 182, 212, 0.7)",
             ],
             borderColor: [
-                "#ef4444",
-                "#eab308",
                 "#3b82f6",
+                "#eab308",
                 "#8b5cf6",
+                "#ef4444",
                 "#06b6d4",
             ],
             borderWidth: 2,
@@ -157,19 +150,20 @@ export const cheatingTypesChartData = {
 
 export const incidentsPerHourChartData = {
     labels: [
-        "8 AM",
-        "9 AM",
-        "10 AM",
-        "11 AM",
-        "12 PM",
-        "1 PM",
-        "2 PM",
-        "3 PM",
+        "0:00",
+        "0:15",
+        "0:30",
+        "0:45",
+        "1:00",
+        "1:15",
+        "1:30",
+        "1:45",
+        "2:00",
     ],
     datasets: [
         {
             label: "Incidents",
-            data: [0, 3, 3, 1, 0, 2, 1, 0],
+            data: [0, 1, 3, 2, 1, 3, 2, 1, 0],
             borderColor: "#3b82f6",
             backgroundColor: "rgba(59, 130, 246, 0.1)",
             fill: true,
@@ -226,10 +220,22 @@ export const lineChartOptions = {
     },
     scales: {
         x: {
+            title: {
+                display: true,
+                text: "Exam Duration",
+                color: "#94a3b8",
+                font: { size: 12, weight: "bold" },
+            },
             ticks: { color: "#94a3b8", font: { size: 11 } },
             grid: { color: "rgba(30, 41, 59, 0.5)" },
         },
         y: {
+            title: {
+                display: true,
+                text: "Incidents",
+                color: "#94a3b8",
+                font: { size: 12, weight: "bold" },
+            },
             ticks: { color: "#94a3b8", stepSize: 1 },
             grid: { color: "rgba(30, 41, 59, 0.5)" },
         },
@@ -253,10 +259,9 @@ export const systemInfo = {
 
 // ===== Simulate Cheating Options =====
 export const cheatingTypes = [
-    "Phone Usage",
-    "Head Turning",
-    "Passing Notes",
-    "Looking at Neighbor",
-    "Whispering",
-    "Using Hidden Notes",
+    "Passing Paper",
+    "Head Tilting",
+    "Hands Under Table",
+    "Using Phone",
+    "Using Cheat Sheet",
 ];
